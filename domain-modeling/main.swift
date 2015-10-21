@@ -13,9 +13,12 @@ import Foundation
 // Part 1: Money value type //
 //////////////////////////////
 
-struct Money {
+struct Money : CustomStringConvertible, Mathematics {
     var amount: Double
     var currency: String
+    var description: String {
+        return "\(self.currency)\(self.amount)"
+    }
     
     mutating func convert(convertTo: String) {
         self.amount *= getRateToUSD(self.currency)
@@ -71,9 +74,12 @@ struct Money {
 // Part 2: Job class //
 ///////////////////////
 
-class Job {
+class Job : CustomStringConvertible {
     var title : String
     var salary : (Double, String)
+    var description : String {
+        return "\(self.title): $\(self.salary.0) \(self.salary.1)"
+    }
     
     init(title: String, salary: (Double, String)) {
         self.title = title
@@ -108,12 +114,15 @@ class Job {
 // Part 3: Person class //
 //////////////////////////
 
-class Person {
+class Person : CustomStringConvertible {
     var firstName : String
     var lastName : String
     var age : Int
     var job : Job?
     var spouse : Person?
+    var description : String {
+        return self.toString()
+    }
     
     init(first: String, last: String, age: Int, job: Job, spouse: Person) {
         self.firstName = first
@@ -160,8 +169,11 @@ class Person {
 // Part 4: Family class //
 //////////////////////////
 
-class Family {
+class Family : CustomStringConvertible {
     var members : [Person]
+    var description : String {
+        return self.toString()
+    }
     
     init(family: [Person]) {
         var isOver21 = false
@@ -192,81 +204,117 @@ class Family {
         members.append(Person(first: first, last: last, age: 0))
     }
     
+    func toString() -> String {
+        var str = "\(members[0].description)"
+        for var i = 1; i < members.count; i++ {
+            str += "; \(members[i].description)"
+        }
+        return str
+    }
+    
 }
+
+///////////////////////
+// Domain Modeling 2 //
+///////////////////////
+
+protocol CustomStringConvertible {
+    var description: String { get }
+}
+
+protocol Mathematics {
+    mutating func add(m1: Money)
+    mutating func subtract(m1: Money)
+}
+
+extension Double {
+    var USD : Money { return Money(amount: self, currency: "USD") }
+    var EUR : Money { return Money(amount: self, currency: "EUR") }
+    var GBP : Money { return Money(amount: self, currency: "GBP") }
+    var CAN : Money { return Money(amount: self, currency: "CAN") }
+}
+
+
+
+
+var job1 = Job(title: "Janitor", salary: (22.0, "per-hour"))
+print(job1.description)
+
 
 
 /////////////////////
 // Part 5: Testing //
 /////////////////////
 
-func testMoney() {
-    print("Testing Money:")
-    var currency1 = Money(amount: 100.0, currency: "USD")
-    print("First currency: $\(currency1.amount) \(currency1.currency)")
-    print("Converted to:")
-    currency1.convert("GBP")
-    print("\tGBP: $\(currency1.amount) \(currency1.currency)")
-    currency1.convert("EUR")
-    print("\tEUR: $\(currency1.amount) \(currency1.currency)")
-    currency1.convert("CAN")
-    print("\tCAN: $\(currency1.amount) \(currency1.currency)")
-    currency1.convert("USD")
-    
-    let currency2 = Money(amount: 57.50, currency: "CAN")
-    print("Second currency: $\(currency2.amount) \(currency2.currency)")
-    print("Addition and subtraction:")
-    print("\t$\(currency1.amount) \(currency1.currency) + $\(currency2.amount) \(currency2.currency) =")
-    currency1.add(currency2)
-    print("\t$\(currency1.amount) \(currency1.currency)")
-    
-    print("\t$\(currency1.amount) \(currency1.currency) - $\(currency2.amount) \(currency2.currency) =")
-    currency1.subtract(currency2)
-    print("\t$\(currency1.amount) \(currency1.currency)")
 
-
-}
-
-func testJob() {
-    print("\n\nTesting Job:")
-    let job1 = Job(title: "Janitor", salary: (11.56, "per-hour"))
-    print("Job 1: \(job1.title): $\(job1.salary.0) \(job1.salary.1)")
-    print("Adding a raise:")
-    job1.raise(5.0)
-    print("\t 5%:  $\(job1.salary.0)")
-    job1.salary.0 = 11.56
-    job1.raise(10.0)
-    print("\t10%:  $\(job1.salary.0)")
-    print("Calculating yearly income:")
-    job1.salary.0 = 11.56
-    let job1Income = job1.calculateIncome(2000)
-    print("\t2000 hours worked: $\(job1Income) per year")
-    
-    let job2 = Job(title: "CEO", salary: (11000000, "per-year"))
-    print("\nJob 2: \(job2.title): $\(job2.salary.0) \(job2.salary.1)")
-    print("Adding a raise:")
-    job2.raise(5.0)
-    print("\t 5%:  $\(job2.salary.0)")
-    job2.salary.0 = 11000000
-    job2.raise(10.0)
-    print("\t10%:  $\(job2.salary.0)")
-    print("Calculating yearly income:")
-    job2.salary.0 = 11000000
-    let job2Income = job2.calculateIncome(2000)
-    print("\t2000 hours worked: $\(job2Income) per year")
-}
-
-func testPerson() {
-    print("\n\nTesting Person:")
-    let squidward = Person(first: "Squidward", last: "Tentacles", age: 30, job: Job(title: "cashier", salary: (10.50, "per-hour")), spouse: Person())
-    print("\tPerson 1: \(squidward.toString())")
-    let spongebob = Person(first: "Spongebob", last: "Squarepants", age: 15, job: Job(title: "frycook", salary: (6.50, "per-hour")), spouse: Person())
-    print("\tPerson 2: \(spongebob.toString())")
-    let krabs = Person(first: "Eugene", last: "Krabs", age: 50, job: Job(title: "business owner", salary: (50000, "per-year")), spouse: Person(first: "Mrs", last: "Krabs", age: 46))
-    print("\tPerson 3: \(krabs.toString())")
-    let patrick = Person(first: "Patrick", last: "Star", age: 17, job: Job(), spouse: Person())
-    print("\tPerson 4: \(patrick.toString())")
-}
-
+//func testMoney() {
+//    print("Testing Money:")
+//    var currency1 = Money(amount: 100.0, currency: "USD")
+//    print("First currency: $\(currency1.amount) \(currency1.currency)")
+//    print("Converted to:")
+//    currency1.convert("GBP")
+//    print("\tGBP: $\(currency1.amount) \(currency1.currency)")
+//    currency1.convert("EUR")
+//    print("\tEUR: $\(currency1.amount) \(currency1.currency)")
+//    currency1.convert("CAN")
+//    print("\tCAN: $\(currency1.amount) \(currency1.currency)")
+//    currency1.convert("USD")
+//    
+//    let currency2 = Money(amount: 57.50, currency: "CAN")
+//    print("Second currency: $\(currency2.amount) \(currency2.currency)")
+//    print("Addition and subtraction:")
+//    print("\t$\(currency1.amount) \(currency1.currency) + $\(currency2.amount) \(currency2.currency) =")
+//    currency1.add(currency2)
+//    print("\t$\(currency1.amount) \(currency1.currency)")
+//    
+//    print("\t$\(currency1.amount) \(currency1.currency) - $\(currency2.amount) \(currency2.currency) =")
+//    currency1.subtract(currency2)
+//    print("\t$\(currency1.amount) \(currency1.currency)")
+//
+//
+//}
+//
+//func testJob() {
+//    print("\n\nTesting Job:")
+//    let job1 = Job(title: "Janitor", salary: (11.56, "per-hour"))
+//    print("Job 1: \(job1.title): $\(job1.salary.0) \(job1.salary.1)")
+//    print("Adding a raise:")
+//    job1.raise(5.0)
+//    print("\t 5%:  $\(job1.salary.0)")
+//    job1.salary.0 = 11.56
+//    job1.raise(10.0)
+//    print("\t10%:  $\(job1.salary.0)")
+//    print("Calculating yearly income:")
+//    job1.salary.0 = 11.56
+//    let job1Income = job1.calculateIncome(2000)
+//    print("\t2000 hours worked: $\(job1Income) per year")
+//    
+//    let job2 = Job(title: "CEO", salary: (11000000, "per-year"))
+//    print("\nJob 2: \(job2.title): $\(job2.salary.0) \(job2.salary.1)")
+//    print("Adding a raise:")
+//    job2.raise(5.0)
+//    print("\t 5%:  $\(job2.salary.0)")
+//    job2.salary.0 = 11000000
+//    job2.raise(10.0)
+//    print("\t10%:  $\(job2.salary.0)")
+//    print("Calculating yearly income:")
+//    job2.salary.0 = 11000000
+//    let job2Income = job2.calculateIncome(2000)
+//    print("\t2000 hours worked: $\(job2Income) per year")
+//}
+//
+//func testPerson() {
+//    print("\n\nTesting Person:")
+//    let squidward = Person(first: "Squidward", last: "Tentacles", age: 30, job: Job(title: "cashier", salary: (10.50, "per-hour")), spouse: Person())
+//    print("\tPerson 1: \(squidward.toString())")
+//    let spongebob = Person(first: "Spongebob", last: "Squarepants", age: 15, job: Job(title: "frycook", salary: (6.50, "per-hour")), spouse: Person())
+//    print("\tPerson 2: \(spongebob.toString())")
+//    let krabs = Person(first: "Eugene", last: "Krabs", age: 50, job: Job(title: "business owner", salary: (50000, "per-year")), spouse: Person(first: "Mrs", last: "Krabs", age: 46))
+//    print("\tPerson 3: \(krabs.toString())")
+//    let patrick = Person(first: "Patrick", last: "Star", age: 17, job: Job(), spouse: Person())
+//    print("\tPerson 4: \(patrick.toString())")
+//}
+//
 func testFamily() {
     print("\n\nTesting Family:")
     let homer = Person(first: "Homer", last: "Simpson", age: 40, job: Job(title: "Safety Inspector", salary: (25000, "per-year")), spouse: Person())
@@ -280,22 +328,23 @@ func testFamily() {
     simpsons.append(bart)
     simpsons.append(lisa)
     let simpsonsFam = Family(family: simpsons)
-    for member in simpsonsFam.members {
-        print("\tMember: \(member.toString())")
-    }
-    print("They had a  baby!")
-    simpsonsFam.haveChild("Maggie", last: "Simpson")
-    for member in simpsonsFam.members {
-        print("\tMember: \(member.toString())")
-    }
-    print("Total family income:")
-    print("\t$\(simpsonsFam.householdIncome()) per year")
-
-
+    print(simpsonsFam.description)
+//    for member in simpsonsFam.members {
+//        print("\tMember: \(member.toString())")
+//    }
+//    print("They had a  baby!")
+//    simpsonsFam.haveChild("Maggie", last: "Simpson")
+//    for member in simpsonsFam.members {
+//        print("\tMember: \(member.toString())")
+//    }
+//    print("Total family income:")
+//    print("\t$\(simpsonsFam.householdIncome()) per year")
+//
+//
 
 }
-
-testMoney()
-testJob()
-testPerson()
+//
+//testMoney()
+//testJob()
+//testPerson()
 testFamily()
