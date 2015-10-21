@@ -56,18 +56,8 @@ struct Money : CustomStringConvertible, Mathematics {
         self.amount = self.amount - m.amount
         self.convert(type)
     }
-    
-    func isValidType(c: Money) -> Bool {
-        switch c.currency {
-        case "USD", "GBP", "EUR", "CAN":
-            return true
-        default:
-            return false
-        }
-    }
+
 }
-
-
 
 
 ///////////////////////
@@ -106,8 +96,6 @@ class Job : CustomStringConvertible {
         
     }
 }
-
-
 
 
 //////////////////////////
@@ -162,9 +150,6 @@ class Person : CustomStringConvertible {
 }
 
 
-
-
-
 //////////////////////////
 // Part 4: Family class //
 //////////////////////////
@@ -214,6 +199,7 @@ class Family : CustomStringConvertible {
     
 }
 
+
 ///////////////////////
 // Domain Modeling 2 //
 ///////////////////////
@@ -235,116 +221,74 @@ extension Double {
 }
 
 
+/////////////
+// Testing //
+/////////////
 
+func stringConvertibleTest() {
+    print("Testing CustomStringConvertible...")
+    let c1 = Money(amount: 22.0, currency: "EUR")
+    let c2 = Money(amount: 101.55, currency: "GBP")
+    print("\nMoney:")
+    print("\t\(c1.description)")
+    print("\t\(c2.description)")
 
-var job1 = Job(title: "Janitor", salary: (22.0, "per-hour"))
-print(job1.description)
+    let j1 = Job(title: "Professor", salary: (70000, "per-year"))
+    let j2 = Job(title: "Postal Worker", salary: (19.50, "per-hour"))
+    print("\nJob:")
+    print("\t\(j1.description)")
+    print("\t\(j2.description)")
 
+    let p1 = Person(first: "Joffrey", last: "Baratheon", age: 19, job: Job(title: "King", salary: (500000, "per-year")), spouse: Person(first: "Margaery", last: "Tyrell", age: 20))
+    let p2 = Person(first: "Arya", last: "Stark", age: 16)
+    print("\nPerson:")
+    print("\t\(p1.description)")
+    print("\t\(p2.description)")
 
-
-/////////////////////
-// Part 5: Testing //
-/////////////////////
-
-
-//func testMoney() {
-//    print("Testing Money:")
-//    var currency1 = Money(amount: 100.0, currency: "USD")
-//    print("First currency: $\(currency1.amount) \(currency1.currency)")
-//    print("Converted to:")
-//    currency1.convert("GBP")
-//    print("\tGBP: $\(currency1.amount) \(currency1.currency)")
-//    currency1.convert("EUR")
-//    print("\tEUR: $\(currency1.amount) \(currency1.currency)")
-//    currency1.convert("CAN")
-//    print("\tCAN: $\(currency1.amount) \(currency1.currency)")
-//    currency1.convert("USD")
-//    
-//    let currency2 = Money(amount: 57.50, currency: "CAN")
-//    print("Second currency: $\(currency2.amount) \(currency2.currency)")
-//    print("Addition and subtraction:")
-//    print("\t$\(currency1.amount) \(currency1.currency) + $\(currency2.amount) \(currency2.currency) =")
-//    currency1.add(currency2)
-//    print("\t$\(currency1.amount) \(currency1.currency)")
-//    
-//    print("\t$\(currency1.amount) \(currency1.currency) - $\(currency2.amount) \(currency2.currency) =")
-//    currency1.subtract(currency2)
-//    print("\t$\(currency1.amount) \(currency1.currency)")
-//
-//
-//}
-//
-//func testJob() {
-//    print("\n\nTesting Job:")
-//    let job1 = Job(title: "Janitor", salary: (11.56, "per-hour"))
-//    print("Job 1: \(job1.title): $\(job1.salary.0) \(job1.salary.1)")
-//    print("Adding a raise:")
-//    job1.raise(5.0)
-//    print("\t 5%:  $\(job1.salary.0)")
-//    job1.salary.0 = 11.56
-//    job1.raise(10.0)
-//    print("\t10%:  $\(job1.salary.0)")
-//    print("Calculating yearly income:")
-//    job1.salary.0 = 11.56
-//    let job1Income = job1.calculateIncome(2000)
-//    print("\t2000 hours worked: $\(job1Income) per year")
-//    
-//    let job2 = Job(title: "CEO", salary: (11000000, "per-year"))
-//    print("\nJob 2: \(job2.title): $\(job2.salary.0) \(job2.salary.1)")
-//    print("Adding a raise:")
-//    job2.raise(5.0)
-//    print("\t 5%:  $\(job2.salary.0)")
-//    job2.salary.0 = 11000000
-//    job2.raise(10.0)
-//    print("\t10%:  $\(job2.salary.0)")
-//    print("Calculating yearly income:")
-//    job2.salary.0 = 11000000
-//    let job2Income = job2.calculateIncome(2000)
-//    print("\t2000 hours worked: $\(job2Income) per year")
-//}
-//
-//func testPerson() {
-//    print("\n\nTesting Person:")
-//    let squidward = Person(first: "Squidward", last: "Tentacles", age: 30, job: Job(title: "cashier", salary: (10.50, "per-hour")), spouse: Person())
-//    print("\tPerson 1: \(squidward.toString())")
-//    let spongebob = Person(first: "Spongebob", last: "Squarepants", age: 15, job: Job(title: "frycook", salary: (6.50, "per-hour")), spouse: Person())
-//    print("\tPerson 2: \(spongebob.toString())")
-//    let krabs = Person(first: "Eugene", last: "Krabs", age: 50, job: Job(title: "business owner", salary: (50000, "per-year")), spouse: Person(first: "Mrs", last: "Krabs", age: 46))
-//    print("\tPerson 3: \(krabs.toString())")
-//    let patrick = Person(first: "Patrick", last: "Star", age: 17, job: Job(), spouse: Person())
-//    print("\tPerson 4: \(patrick.toString())")
-//}
-//
-func testFamily() {
-    print("\n\nTesting Family:")
-    let homer = Person(first: "Homer", last: "Simpson", age: 40, job: Job(title: "Safety Inspector", salary: (25000, "per-year")), spouse: Person())
-    let marge = Person(first: "Marge", last: "Simpson", age: 36, job: Job(title: "Baker", salary: (10.50, "per-hour")), spouse: homer)
-    homer.spouse = marge
-    let bart = Person(first: "Bart", last: "Simpson", age: 10)
-    let lisa = Person(first: "Lisa", last: "Simpson", age: 8)
-    var simpsons = [Person]()
-    simpsons.append(homer)
-    simpsons.append(marge)
-    simpsons.append(bart)
-    simpsons.append(lisa)
-    let simpsonsFam = Family(family: simpsons)
-    print(simpsonsFam.description)
-//    for member in simpsonsFam.members {
-//        print("\tMember: \(member.toString())")
-//    }
-//    print("They had a  baby!")
-//    simpsonsFam.haveChild("Maggie", last: "Simpson")
-//    for member in simpsonsFam.members {
-//        print("\tMember: \(member.toString())")
-//    }
-//    print("Total family income:")
-//    print("\t$\(simpsonsFam.householdIncome()) per year")
-//
-//
-
+    let bob = Person(first: "Bob", last: "Belcher", age: 44, job: Job(title: "Frycook", salary: (6.50, "per-hour")), spouse: Person())
+    let linda = Person(first: "Linda", last: "Belcher", age: 42, job: Job(title: "Bookkeeper", salary: (6.50, "per-hour")), spouse: bob)
+    bob.spouse = linda
+    let tina = Person(first: "Tina", last: "Belcher", age: 13, job: Job(title: "Waitress", salary: (2.00, "per-hour")), spouse: Person())
+    let gene = Person(first: "Gene", last: "Belcher", age: 11)
+    let louise = Person(first: "Louise", last: "Belcher", age: 9)
+    var belchers = [Person]()
+    belchers.append(bob)
+    belchers.append(linda)
+    belchers.append(tina)
+    belchers.append(gene)
+    belchers.append(louise)
+    let f1 = Family(family: belchers)
+    print("\nFamily:")
+    print("\t\(f1.description)")
 }
-//
-//testMoney()
-//testJob()
-//testPerson()
-testFamily()
+
+func mathTest() {
+    print("\n\nTesting Mathematics...")
+    var c3 = Money(amount: 25.0, currency: "USD")
+    let c4 = Money(amount: 18.5, currency: "GBP")
+    print("\t\(c3.description) + \(c4.description)")
+    c3.add(c4)
+    print("\t= \(c3.description)")
+    var c5 = Money(amount: 20.0, currency: "CAN")
+    let c6 = Money(amount: 10.0, currency: "USD")
+    print("\t\(c5.description) - \(c6.description)")
+    c5.subtract(c6)
+    print("\t= \(c5.description)")
+}
+
+func doubleTest() {
+    print("\n\nTesting Double...")
+
+    let d1 = 34.0
+    print("\tConverting Double \(d1) to a CAN Money object:")
+    let d1Curr = d1.CAN
+    print("\t\(d1Curr.description)")
+    let d2 = 13.2
+    print("\tConverting Double \(d2) to a EUR Money object:")
+    let d2Curr = d2.EUR
+    print("\t\(d2Curr.description)")
+}
+
+stringConvertibleTest()
+mathTest()
+doubleTest()
